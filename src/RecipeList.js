@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
+const apiKey = process.env.REACT_APP_SPOONACULAR_API_KEY;
+
 const RecipeList = ({ updateGroceryList, addFavorite }) => {
     const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
         const fetchRecipes = async () => {
             try {
-                const response = await fetch('https://api.spoonacular.com/recipes/random?number=10&apiKey=31adba7c729b4b1984bc31c031cd35d7');
+                const response = await fetch(`https://api.spoonacular.com/recipes/random?number=10&apiKey=${apiKey}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import RecipeList from './RecipeList';
-import GroceryList from './GroceryList';
+import Navbar from './Navbar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './Home';
+import FavoritesPage from './FavoritesPage';
+import GroceryListPage from './GroceryListPage';
+import ExplorePage from './ExplorePage';
 import './styles.css';
 
 const App = () => {
@@ -8,7 +12,6 @@ const App = () => {
     const [favorites, setFavorites] = useState(
         JSON.parse(localStorage.getItem('favorites')) || []
     );
-    const [alert, setAlert] = useState(null);
 
     const updateGroceryList = (recipe, isChecked) => {
         const updatedList = { ...groceryList };
@@ -38,36 +41,29 @@ const App = () => {
         setFavorites((prevFavorites) => {
             const isAlreadyFavorite = prevFavorites.some((fav) => fav.id === recipe.id);
             if (isAlreadyFavorite) {
-                setAlert(`${recipe.title} is already in favorites.`);
+                alert(`${recipe.title} is already in favorites.`);
                 return prevFavorites;
             } else {
                 const updatedFavorites = [...prevFavorites, recipe];
                 localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-                setAlert(`${recipe.title} added to favorites!`);
+                alert(`${recipe.title} added to favorites!`);
                 return updatedFavorites;
             }
         });
     };
 
     return (
-        <div className="app">
-            <div className="sidebar">
-                <h1>Recipe Grocery List</h1>
-                <RecipeList updateGroceryList={updateGroceryList} addFavorite={addFavorite} />
+        <Router>
+            <div className="app">
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/grocery-list" element={<GroceryListPage addFavorite={addFavorite} />} />
+                    <Route path="/favorites" element={<FavoritesPage />} />
+                    <Route path="/explore" element={<ExplorePage />} />
+                </Routes>
             </div>
-            <div className="main-content">
-                <GroceryList groceryList={groceryList} setGroceryList={setGroceryList} />
-                <div className="favorite-list">
-                    <h2>Favorite Recipes</h2>
-                    <ul>
-                        {favorites.map((recipe) => (
-                            <li key={recipe.id}>{recipe.title}</li>
-                        ))}
-                    </ul>
-                </div>
-                {alert && <div className="alert">{alert}</div>}
-            </div>
-        </div>
+        </Router>
     );
 };
 

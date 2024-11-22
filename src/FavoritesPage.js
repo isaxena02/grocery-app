@@ -1,31 +1,32 @@
 import React from 'react';
+import { useFavorites } from './FavoritesContext';
+import './styles.css';
 
-const FavoritesPage = ({ favorites }) => {
-    const hasFavorites = favorites && favorites.length > 0;
+const FavoritesPage = () => {
+  const { favorites, removeFromFavorites } = useFavorites();
 
-    return (
-        <div className="favorite-list">
-            <h2>Favorite Recipes</h2>
-            {hasFavorites ? (
-                <ul>
-                    {favorites.map((recipe) => (
-                        <li key={recipe.id}>{recipe.title}</li>
-                    ))}
-                </ul>
-            ) : (
-                <div className="placeholder-content">
-                    <p>You haven’t added any recipes to favorites yet!</p>
-                    <p>Here are some examples of recipes that could be in your favorites:</p>
-                    <ul>
-                        <li>Spaghetti Carbonara</li>
-                        <li>Grilled Chicken Salad</li>
-                        <li>Vegetarian Tacos</li>
-                        <li>Avocado Toast</li>
-                    </ul>
-                </div>
-            )}
-        </div>
-    );
+  return (
+    <div className="favorites-container">
+      <h1>Favorites</h1>
+      {favorites.length === 0 ? (
+        <p>No recipes added to favorites yet.</p>
+      ) : (
+        <ul className="favorites-list">
+          {favorites.map((title, index) => (
+            <li key={index} className="favorite-item">
+              <span>{title}</span>
+              <button
+                onClick={() => removeFromFavorites(title)}
+                className="remove-favorite-btn"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default FavoritesPage;
